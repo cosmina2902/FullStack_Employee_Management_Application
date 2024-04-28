@@ -1,9 +1,11 @@
 package employee.management.ems.service.impl;
 
 import employee.management.ems.dto.EmployeeDto;
+import employee.management.ems.entity.Department;
 import employee.management.ems.entity.Employee;
 import employee.management.ems.exception.ResourceNotFoundException;
 import employee.management.ems.mapper.EmployeeMapper;
+import employee.management.ems.repository.DepartmentRepository;
 import employee.management.ems.repository.EmployeeRepository;
 import employee.management.ems.service.EmployeeService;
 import lombok.AllArgsConstructor;
@@ -17,9 +19,16 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
+
+    private DepartmentRepository departmentRepository;
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         Employee employee = EmployeeMapper.mapToEmpoyee(employeeDto);
+
+        Department department = departmentRepository.findById(employeeDto.getDepartmentId()).orElseThrow(()->
+                new ResourceNotFoundException("Department is not exist withn id"+ employeeDto.getDepartmentId()));
+        employee.setDepartment(department);
+
         Employee savedEmployee= employeeRepository.save(employee);
         return EmployeeMapper.mapToEmployeeDto(savedEmployee);
     }
@@ -45,6 +54,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setFirstName(employeeDto.getFirstName());
         employee.setLastName(employeeDto.getLastName());
         employee.setEmail(employeeDto.getEmail());
+
+        Department department = departmentRepository.findById(employeeDto.getDepartmentId()).orElseThrow(()->
+                new ResourceNotFoundException("Department is not exist within id"+ employeeDto.getDepartmentId()));
+        employee.setDepartment(department);
+
         Employee updateEmployee = employeeRepository.save(employee);
         return EmployeeMapper.mapToEmployeeDto(updateEmployee);
     }

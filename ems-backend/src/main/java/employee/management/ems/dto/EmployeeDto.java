@@ -1,5 +1,6 @@
 package employee.management.ems.dto;
 
+import employee.management.ems.entity.Department;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,4 +15,5 @@ public class EmployeeDto {
     private String firstName;
     private String lastName;
     private String email;
+    private Long departmentId;
 }
